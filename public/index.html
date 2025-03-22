@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spice Odyssey - Supply Chain Management</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <!-- Login Section -->
+    <div id="loginSection" class="login-container">
+      <div class="login-box">
+        <div class="login-header">
+          <h1>🌶️ Spice Odyssey</h1>
+          <p>Supply Chain Management System</p>
+        </div>
+        <div id="loginAlert"></div>
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              placeholder="Enter your email"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              placeholder="Enter your password"
+              required
+            />
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%">
+            Login
+          </button>
+        </form>
+        <p style="text-align: center; margin-top: 1rem; color: #7f8c8d">
+          Default: admin@spiceroute.com / admin123
+        </p>
+      </div>
+    </div>
+
+    <!-- Dashboard Section -->
+    <div id="dashboardSection" style="display: none">
+      <!-- Header -->
+      <header class="header">
+        <div class="container">
+          <div class="header-content">
+            <div class="logo">
+              <span class="logo-icon">🌶️</span>
+              <span>Spice Odyssey</span>
+            </div>
+            <nav class="nav">
+              <a href="#" class="nav-link" onclick="showSection('dashboard')"
+                >Dashboard</a
+              >
+              <a href="#" class="nav-link" onclick="showSection('suppliers')"
+                >Suppliers</a
+              >
+              <a href="#" class="nav-link" onclick="showSection('products')"
+                >Products</a
+              >
+              <a href="#" class="nav-link" onclick="showSection('inventory')"
+                >Inventory</a
+              >
+              <a href="#" class="nav-link" onclick="showSection('orders')"
+                >Orders</a
+              >
+              <a href="#" class="nav-link" onclick="showSection('shipments')"
+                >Shipments</a
+              >
+            </nav>
+            <div class="user-info">
+              <span id="userName"></span>
+              <button class="btn btn-outline btn-small" onclick="logout()">
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Dashboard Content -->
+      <div class="container">
+        <div class="dashboard">
+          <!-- Dashboard Overview -->
+          <div id="dashboardContent" class="content-section">
+            <div class="dashboard-header">
+              <h1>Dashboard Overview</h1>
+              <p>Welcome to your supply chain management system</p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-icon primary">📦</div>
+                <div class="stat-details">
+                  <h3 id="totalProducts">0</h3>
+                  <p>Total Products</p>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon success">🏢</div>
+                <div class="stat-details">
+                  <h3 id="totalSuppliers">0</h3>
+                  <p>Active Suppliers</p>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon warning">📊</div>
+                <div class="stat-details">
+                  <h3 id="lowStockItems">0</h3>
+                  <p>Low Stock Items</p>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon info">🚚</div>
+                <div class="stat-details">
+                  <h3 id="pendingOrders">0</h3>
+                  <p>Pending Orders</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="data-section">
+              <div class="section-header">
+                <h2>Low Stock Alerts</h2>
+                <button
+                  class="btn btn-primary btn-small"
+                  onclick="refreshDashboard()"
+                >
+                  Refresh
+                </button>
+              </div>
+              <div class="table" style="display: block; overflow-x: auto">
+                <table style="width: 100%; border-collapse: collapse">
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th>SKU</th>
+                      <th>Warehouse</th>
+                      <th>Current Stock</th>
+                      <th>Reorder Level</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="lowStockTable">
+                    <tr>
+                      <td colspan="6" style="text-align: center; padding: 2rem">
+                        Loading...
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Suppliers Section -->
+          <div
+            id="suppliersContent"
+            class="content-section"
+            style="display: none"
+          >
+            <div class="data-section">
+              <div class="section-header">
+                <h2>Suppliers Management</h2>
+                <button
+                  class="btn btn-primary"
+                  onclick="showAddSupplierModal()"
+                >
+                  + Add Supplier
+                </button>
+              </div>
+              <div class="filters">
+                <input
+                  type="text"
+                  class="filter-input"
+                  id="supplierSearch"
+                  placeholder="Search suppliers..."
+                  onkeyup="searchSuppliers()"
+                />
+                <select
+                  class="filter-input"
+                  id="supplierCategory"
+                  onchange="filterSuppliers()"
+                >
+                  <option value="">All Categories</option>
+                  <option value="raw-materials">Raw Materials</option>
+                  <option value="packaging">Packaging</option>
+                  <option value="equipment">Equipment</option>
+                  <option value="services">Services</option>
+                </select>
+              </div>
+              <div class="table" style="display: block; overflow-x: auto">
+                <table style="width: 100%; border-collapse: collapse">
+                  <thead>
+                    <tr>
+                      <th>Code</th>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Phone</th>
+                      <th>Category</th>
+                      <th>Rating</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="suppliersTable">
+                    <tr>
+                      <td colspan="8" style="text-align: center; padding: 2rem">
+                        Loading...
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Products Section -->
+          <div
+            id="productsContent"
+            class="content-section"
+            style="display: none"
+          >
+            <div class="data-section">
+              <div class="section-header">
+                <h2>Products Catalog</h2>
+                <button class="btn btn-primary" onclick="showAddProductModal()">
+                  + Add Product
+                </button>
+              </div>
+              <div class="filters">
+                <input
+                  type="text"
+                  class="filter-input"
+                  id="productSearch"
+                  placeholder="Search products..."
+                  onkeyup="searchProducts()"
+                />
+                <select
+                  class="filter-input"
+                  id="productCategory"
+                  onchange="filterProducts()"
+                >
+                  <option value="">All Categories</option>
+                  <option value="spices">Spices</option>
+                  <option value="herbs">Herbs</option>
+                  <option value="seasonings">Seasonings</option>
+                  <option value="blends">Blends</option>
+                </select>
+              </div>
+              <div class="table" style="display: block; overflow-x: auto">
+                <table style="width: 100%; border-collapse: collapse">
+                  <thead>
+                    <tr>
+                      <th>SKU</th>
+                      <th>Name</th>
+                      <th>Category</th>
+                      <th>Supplier</th>
+                      <th>Unit Price</th>
+                      <th>Unit</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="productsTable">
+                    <tr>
+                      <td colspan="8" style="text-align: center; padding: 2rem">
+                        Loading...
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Inventory Section -->
+          <div
+            id="inventoryContent"
+            class="content-section"
+            style="display: none"
+          >
+            <div class="data-section">
+              <div class="section-header">
+                <h2>Inventory Management</h2>
+                <button
+                  class="btn btn-primary"
+                  onclick="showAdjustInventoryModal()"
+                >
+                  Adjust Inventory
+                </button>
+              </div>
+              <div class="table" style="display: block; overflow-x: auto">
+                <table style="width: 100%; border-collapse: collapse">
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th>SKU</th>
+                      <th>Warehouse</th>
+                      <th>Quantity</th>
+                      <th>Reserved</th>
+                      <th>Available</th>
+                      <th>Status</th>
+                      <th>Last Updated</th>
+                    </tr>
+                  </thead>
+                  <tbody id="inventoryTable">
+                    <tr>
+                      <td colspan="8" style="text-align: center; padding: 2rem">
+                        Loading...
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Orders Section -->
+          <div id="ordersContent" class="content-section" style="display: none">
+            <div class="data-section">
+              <div class="section-header">
+                <h2>Orders Management</h2>
+                <button class="btn btn-primary" onclick="showAddOrderModal()">
+                  + Create Order
+                </button>
+              </div>
+              <div class="table" style="display: block; overflow-x: auto">
+                <table style="width: 100%; border-collapse: collapse">
+                  <thead>
+                    <tr>
+                      <th>Order #</th>
+                      <th>Type</th>
+                      <th>Supplier</th>
+                      <th>Warehouse</th>
+                      <th>Total Amount</th>
+                      <th>Status</th>
+                      <th>Created</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="ordersTable">
+                    <tr>
+                      <td colspan="8" style="text-align: center; padding: 2rem">
+                        Loading...
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Shipments Section -->
+          <div
+            id="shipmentsContent"
+            class="content-section"
+            style="display: none"
+          >
+            <div class="data-section">
+              <div class="section-header">
+                <h2>Shipments Tracking</h2>
+                <button
+                  class="btn btn-primary"
+                  onclick="showAddShipmentModal()"
+                >
+                  + Create Shipment
+                </button>
+              </div>
+              <div class="table" style="display: block; overflow-x: auto">
+                <table style="width: 100%; border-collapse: collapse">
+                  <thead>
+                    <tr>
+                      <th>Tracking #</th>
+                      <th>Order #</th>
+                      <th>Carrier</th>
+                      <th>Origin</th>
+                      <th>Destination</th>
+                      <th>Status</th>
+                      <th>Est. Delivery</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="shipmentsTable">
+                    <tr>
+                      <td colspan="8" style="text-align: center; padding: 2rem">
+                        Loading...
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+  </body>
+</html>
