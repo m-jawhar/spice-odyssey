@@ -17,7 +17,11 @@ import io
 import base64
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'spice-purity-secret'
+secret_key = os.environ.get('SECRET_KEY')
+if not secret_key:
+    secret_key = 'dev-only-change-me'
+    print('WARNING: SECRET_KEY env var not set. Using development fallback.')
+app.config['SECRET_KEY'] = secret_key
 CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
@@ -489,3 +493,4 @@ if __name__ == '__main__':
     print("="*50 + "\n")
     
     socketio.run(app, host='0.0.0.0', port=port, debug=False)
+

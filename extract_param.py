@@ -9,13 +9,15 @@ import numpy as np
 import json
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score, mean_absolute_error
+from pathlib import Path
 
 # File paths
-CSV_FILE = "E:/spicesniff csv data/spice_data.csv"
-BINARY_MODEL = "E:/spicesniff csv data/binary_classifier.pkl"
-MULTI_MODEL = "E:/spicesniff csv data/multiclass_classifier.pkl"
-REG_MODEL = "E:/spicesniff csv data/regression_model.pkl"
-METADATA = "E:/spicesniff csv data/model_metadata.json"
+BASE_DIR = Path(__file__).resolve().parent
+CSV_FILE = BASE_DIR / "spice_data.csv"
+BINARY_MODEL = BASE_DIR / "binary_classifier.pkl"
+MULTI_MODEL = BASE_DIR / "multiclass_classifier.pkl"
+REG_MODEL = BASE_DIR / "regression_model.pkl"
+METADATA = BASE_DIR / "model_metadata.json"
 
 def load_and_prepare_data():
     """Load data and prepare features exactly as in training"""
@@ -217,7 +219,7 @@ def main():
     }
     
     # Save
-    output_file = "E:/spicesniff csv data/esp32_parameters.json"
+    output_file = BASE_DIR / "esp32_parameters.json"
     with open(output_file, 'w') as f:
         json.dump(output, f, indent=2)
     
